@@ -214,7 +214,7 @@ const friendImages = [
 // Function to create random images on screen
 function createRandomImage(imageSrc) {
     const img = document.createElement("img");
-    img.src = imageSrc; // Use the passed image source
+    img.src = imageSrc;
     img.style.position = "absolute";
     img.style.width = "150px"; // Bigger size
     img.style.height = "150px";
@@ -222,10 +222,13 @@ function createRandomImage(imageSrc) {
 
     const maxX = window.innerWidth - 160; // Avoid going off-screen
     const maxY = window.innerHeight - 160;
-    const centerX = window.innerWidth / 3; // Define center region
-    const centerY = window.innerHeight / 3;
-    const centerWidth = window.innerWidth / 3; // Width of center region
-    const centerHeight = window.innerHeight / 3; // Height of center region
+
+    // Get positions of elements to avoid
+    const textElement = document.querySelector(".container"); // Main container with text
+    const progressBarElement = document.querySelector(".progress-container");
+
+    const textRect = textElement.getBoundingClientRect();
+    const progressRect = progressBarElement.getBoundingClientRect();
 
     let randomX, randomY;
 
@@ -233,8 +236,10 @@ function createRandomImage(imageSrc) {
         randomX = Math.random() * maxX;
         randomY = Math.random() * maxY;
     } while (
-        randomX > centerX && randomX < centerX + centerWidth &&
-        randomY > centerY && randomY < centerY + centerHeight
+        (randomX > textRect.left - 50 && randomX < textRect.right + 50 &&
+         randomY > textRect.top - 50 && randomY < textRect.bottom + 50) ||
+        (randomX > progressRect.left - 50 && randomX < progressRect.right + 50 &&
+         randomY > progressRect.top - 50 && randomY < progressRect.bottom + 50)
     );
 
     img.style.left = `${randomX}px`;
@@ -247,6 +252,7 @@ function createRandomImage(imageSrc) {
     img.style.transition = "opacity 1s ease-in-out";
     setTimeout(() => (img.style.opacity = "1"), 100);
 }
+
 
 // Function to start collage effect
 function startCollageEffect() {
