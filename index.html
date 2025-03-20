@@ -212,24 +212,37 @@ const friendImages = [
 ];
 
 // Function to create random images on screen
-function createRandomImage() {
+function createRandomImage(imageSrc) {
     const img = document.createElement("img");
-    img.src = friendImages[Math.floor(Math.random() * friendImages.length)]; // Random image
+    img.src = imageSrc; // Use the passed image source
     img.style.position = "absolute";
-    img.style.width = "100px"; // Adjust size if needed
-    img.style.height = "100px";
+    img.style.width = "150px"; // Bigger size
+    img.style.height = "150px";
     img.style.borderRadius = "10px"; // Optional rounded corners
 
-    // Generate random positions
-    const maxX = window.innerWidth - 120; // Avoid going off-screen
-    const maxY = window.innerHeight - 120;
-    img.style.left = Math.random() * maxX + "px";
-    img.style.top = Math.random() * maxY + "px";
+    const maxX = window.innerWidth - 160; // Avoid going off-screen
+    const maxY = window.innerHeight - 160;
+    const centerX = window.innerWidth / 3; // Define center region
+    const centerY = window.innerHeight / 3;
+    const centerWidth = window.innerWidth / 3; // Width of center region
+    const centerHeight = window.innerHeight / 3; // Height of center region
 
-    // Add image to the body
+    let randomX, randomY;
+
+    do {
+        randomX = Math.random() * maxX;
+        randomY = Math.random() * maxY;
+    } while (
+        randomX > centerX && randomX < centerX + centerWidth &&
+        randomY > centerY && randomY < centerY + centerHeight
+    );
+
+    img.style.left = `${randomX}px`;
+    img.style.top = `${randomY}px`;
+
     document.body.appendChild(img);
 
-    // Optional: Make images fade in & out
+    // Fade-in effect
     img.style.opacity = "0";
     img.style.transition = "opacity 1s ease-in-out";
     setTimeout(() => (img.style.opacity = "1"), 100);
