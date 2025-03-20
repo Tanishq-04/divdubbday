@@ -256,19 +256,70 @@ function createRandomImage(imageSrc) {
 
 // Function to start collage effect
 function startCollageEffect() {
-    let shuffledImages = [...friendImages].sort(() => Math.random() - 0.5); // Shuffle images
-    let imageCount = 0;
+    let usedIndexes = new Set(); // To prevent duplicate images
+    let totalImages = 6;
+    let leftImages = 3;
+    let rightImages = 3;
 
-    function addImage() {
-        if (imageCount < shuffledImages.length) {
-            createRandomImage(shuffledImages[imageCount]); // Use shuffled images
-            imageCount++;
-            setTimeout(addImage, 800); // Adjust time delay between images
+    function createRandomImage(imageSrc, side) {
+        const img = document.createElement("img");
+        img.src = imageSrc;
+        img.style.position = "absolute";
+        img.style.width = "150px"; // Bigger size
+        img.style.height = "150px";
+        img.style.borderRadius = "10px"; // Optional rounded corners
+
+        const maxY = window.innerHeight - 160;
+        const midX = window.innerWidth / 2; // Middle of screen
+
+        let randomX, randomY;
+
+        // Ensure images appear only on left or right extreme
+        if (side === "left") {
+            randomX = Math.random() * (midX / 2); // Left extreme (first quarter of screen)
+        } else {
+            randomX = midX + Math.random() * (midX / 2); // Right extreme (last quarter of screen)
         }
+
+        randomY = Math.random() * maxY;
+
+        img.style.left = `${randomX}px`;
+        img.style.top = `${randomY}px`;
+
+        document.body.appendChild(img);
+
+        // Fade-in effect
+        img.style.opacity = "0";
+        img.style.transition = "opacity 1s ease-in-out";
+        setTimeout(() => (img.style.opacity = "1"), 100);
     }
 
-    addImage();
+    // Randomly select images ensuring no duplicates
+    function getRandomUniqueImage() {
+        if (usedIndexes.size >= friendImages.length) return null; // Prevent errors if all images are used
+
+        let index;
+        do {
+            index = Math.floor(Math.random() * friendImages.length);
+        } while (usedIndexes.has(index));
+
+        usedIndexes.add(index);
+        return friendImages[index];
+    }
+
+    // Add left images
+    for (let i = 0; i < leftImages; i++) {
+        let imageSrc = getRandomUniqueImage();
+        if (imageSrc) createRandomImage(imageSrc, "left");
+    }
+
+    // Add right images
+    for (let i = 0; i < rightImages; i++) {
+        let imageSrc = getRandomUniqueImage();
+        if (imageSrc) createRandomImage(imageSrc, "right");
+    }
 }
+
 
 // Modify createRandomImage() to accept a specific image
 function createRandomImage(imageSrc) {
