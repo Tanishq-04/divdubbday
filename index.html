@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown to 21st March</title>
+    <style>
+        body {
+            background-color: pink;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            color: #333;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 600px;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #ff4b5c;
+            font-weight: bold;
+        }
+
+        .message {
+            font-size: 2em;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 30px;
+            background-color: #ddd;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background-color: #ff4b5c;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+            border-radius: 20px;
+        }
+
+        .cake-emoji {
+            font-size: 2em;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        .timer {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #ff4b5c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .timer span {
+            padding: 10px;
+            background-color: #ffb3b3;
+            border-radius: 10px;
+            color: white;
+        }
+
+        /* Modal Styles (Initially hidden) */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .modal h2 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #ff4b5c;
+        }
+
+        .modal p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal button {
+            background-color: #ff4b5c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal button:hover {
+            background-color: #ff2d3d;
+        }
+
+        /* Surprise Image */
+        #surpriseImage {
+            display: none;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 10px;
+        }
+
+        /* Surprise Button Styling */
+        #surpriseButton {
+            display: none;
+            background-color: #ff4b5c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        #surpriseButton:hover {
+            background-color: #ff2d3d;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Modal Popup -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2>Happiest Birthday to my Pookie</h2>
+            <p>Thank you for staying during my ups and downs!</p>
+            <button id="awwButton">Aww</button>
+        </div>
+    </div>
+
+    <!-- Main Content (Initially hidden) -->
+    <div id="main-content" class="container" style="display: block;">
+        <h1>Countdown to 21st March</h1>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <span class="cake-emoji">🎂</span>
+
+        <!-- Progress Message -->
+        <div class="message" id="message">A bit more time to go for you birthday Nigger</div>
+
+        <!-- Timer -->
+        <div class="timer" id="timer">
+            <span id="days">00</span>
+            <span id="hours">00</span>
+            <span id="minutes">00</span>
+            <span id="seconds">00</span>
+        </div>
+    </div>
+
+    <!-- Surprise Image -->
+    <img id="surpriseImage" src="" alt="Surprise Photo" />
+
+    <!-- Surprise Button -->
+    <button id="surpriseButton">Surprise</button>
+
+    <script>
+
+let modalDisplayed = false;
+let countdownStopped = false;
+
+// Array of friend's images (Replace with actual image file paths or URLs)
+const friendImages = [
+    "https://your-username.github.io/your-repository/images/friend1.jpg",
+    "https://your-username.github.io/your-repository/images/friend2.jpg",
+    "https://your-username.github.io/your-repository/images/friend3.jpg",
+    "https://your-username.github.io/your-repository/images/friend4.jpg",
+    "https://your-username.github.io/your-repository/images/friend5.jpg",
+    "https://your-username.github.io/your-repository/images/friend6.jpg"
+];
+
+// Function to create random images on screen
+function createRandomImage() {
+    const img = document.createElement("img");
+    img.src = friendImages[Math.floor(Math.random() * friendImages.length)]; // Random image
+    img.style.position = "absolute";
+    img.style.width = "100px"; // Adjust size if needed
+    img.style.height = "100px";
+    img.style.borderRadius = "10px"; // Optional rounded corners
+
+    // Generate random positions
+    const maxX = window.innerWidth - 120; // Avoid going off-screen
+    const maxY = window.innerHeight - 120;
+    img.style.left = Math.random() * maxX + "px";
+    img.style.top = Math.random() * maxY + "px";
+
+    // Add image to the body
+    document.body.appendChild(img);
+
+    // Optional: Make images fade in & out
+    img.style.opacity = "0";
+    img.style.transition = "opacity 1s ease-in-out";
+    setTimeout(() => (img.style.opacity = "1"), 100);
+}
+
+// Function to start collage effect
+function startCollageEffect() {
+    let imageCount = 0;
+    const totalImages = 6; // Adjust as needed
+
+    function addImage() {
+        if (imageCount < totalImages) {
+            createRandomImage();
+            imageCount++;
+            setTimeout(addImage, 800); // Adjust time delay between images
+        }
+    }
+
+    addImage(); // Start adding images
+}
+
+// Countdown Timer Function
+function updateCountdown() {
+    const startDate = new Date("March 20, 2025 00:00:00");
+    const targetDate = new Date("March 21, 2025 00:00:00");
+    const currentDate = new Date();
+
+    const timeRemaining = targetDate - currentDate;
+
+    if (timeRemaining <= 0 && !countdownStopped) {
+        countdownStopped = true; // Stop further execution
+
+        // Stop Countdown Display
+        document.getElementById("days").textContent = "00";
+        document.getElementById("hours").textContent = "00";
+        document.getElementById("minutes").textContent = "00";
+        document.getElementById("seconds").textContent = "00";
+
+        // Ensure Progress Bar is Full
+        document.getElementById("progressBar").style.width = "100%";
+
+        // Change message to Happy Birthday 🎉
+        document.getElementById("message").textContent = "🎉 Happy Birthday! 🎂🥳";
+
+        // Show Modal if not already displayed
+        if (!modalDisplayed) {
+            document.getElementById("modal").style.display = "flex";
+            modalDisplayed = true;
+        }
+
+        // Show Surprise Button
+        document.getElementById("surpriseButton").style.display = "inline-block";
+
+        return; // Exit function to prevent further updates
+    }
+
+    // If countdown is already stopped, do nothing
+    if (countdownStopped) return;
+
+    // Calculate remaining time
+    const days = Math.max(Math.floor(timeRemaining / (1000 * 60 * 60 * 24)), 0);
+    const hours = Math.max(Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)), 0);
+    const minutes = Math.max(Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60)), 0);
+    const seconds = Math.max(Math.floor((timeRemaining % (1000 * 60)) / 1000), 0);
+
+    // Update Countdown Display
+    document.getElementById("days").textContent = days.toString().padStart(2, "0");
+    document.getElementById("hours").textContent = hours.toString().padStart(2, "0");
+    document.getElementById("minutes").textContent = minutes.toString().padStart(2, "0");
+    document.getElementById("seconds").textContent = seconds.toString().padStart(2, "0");
+
+    // Update Progress Bar
+    const totalTime = targetDate - startDate;
+    const progress = Math.round(((currentDate - startDate) / totalTime) * 100);
+    document.getElementById("progressBar").style.width = progress + "%";
+}
+
+// Show Surprise Button after "Aww" button is clicked
+document.getElementById("awwButton").addEventListener("click", function () {
+    document.getElementById("modal").style.display = "none"; // Hide modal
+    document.getElementById("main-content").style.display = "block"; // Show main content
+});
+
+// Start collage effect when Surprise Button is clicked
+document.getElementById("surpriseButton").addEventListener("click", function () {
+    document.getElementById("surpriseButton").style.display = "none"; // Hide button
+    startCollageEffect(); // Start adding images randomly on screen
+});
+
+// Start countdown
+setInterval(updateCountdown, 1000);
+
+
+    </script>
+
+</body>
+</html>
