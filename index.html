@@ -256,35 +256,29 @@ function createRandomImage(imageSrc) {
 
 // Function to start collage effect
 function startCollageEffect() {
-    let usedIndexes = new Set(); // To prevent duplicate images
-    let totalImages = 6;
-    let leftImages = 3;
-    let rightImages = 3;
+    let leftPositions = [
+        { x: 20, y: 50 },
+        { x: 20, y: 250 },
+        { x: 20, y: 450 }
+    ];
 
-    function createRandomImage(imageSrc, side) {
+    let rightPositions = [
+        { x: window.innerWidth - 170, y: 50 },
+        { x: window.innerWidth - 170, y: 250 },
+        { x: window.innerWidth - 170, y: 450 }
+    ];
+
+    let usedIndexes = new Set(); // To prevent duplicate images
+
+    function createImage(imageSrc, position) {
         const img = document.createElement("img");
         img.src = imageSrc;
         img.style.position = "absolute";
-        img.style.width = "150px"; // Bigger size
+        img.style.width = "150px";
         img.style.height = "150px";
-        img.style.borderRadius = "10px"; // Optional rounded corners
-
-        const maxY = window.innerHeight - 160;
-        const midX = window.innerWidth / 2; // Middle of screen
-
-        let randomX, randomY;
-
-        // Ensure images appear only on left or right extreme
-        if (side === "left") {
-            randomX = Math.random() * (midX / 2); // Left extreme (first quarter of screen)
-        } else {
-            randomX = midX + Math.random() * (midX / 2); // Right extreme (last quarter of screen)
-        }
-
-        randomY = Math.random() * maxY;
-
-        img.style.left = `${randomX}px`;
-        img.style.top = `${randomY}px`;
+        img.style.borderRadius = "10px";
+        img.style.left = `${position.x}px`;
+        img.style.top = `${position.y}px`;
 
         document.body.appendChild(img);
 
@@ -294,10 +288,8 @@ function startCollageEffect() {
         setTimeout(() => (img.style.opacity = "1"), 100);
     }
 
-    // Randomly select images ensuring no duplicates
     function getRandomUniqueImage() {
-        if (usedIndexes.size >= friendImages.length) return null; // Prevent errors if all images are used
-
+        if (usedIndexes.size >= friendImages.length) return null;
         let index;
         do {
             index = Math.floor(Math.random() * friendImages.length);
@@ -307,18 +299,19 @@ function startCollageEffect() {
         return friendImages[index];
     }
 
-    // Add left images
-    for (let i = 0; i < leftImages; i++) {
+    // Place images on the left
+    leftPositions.forEach((pos) => {
         let imageSrc = getRandomUniqueImage();
-        if (imageSrc) createRandomImage(imageSrc, "left");
-    }
+        if (imageSrc) createImage(imageSrc, pos);
+    });
 
-    // Add right images
-    for (let i = 0; i < rightImages; i++) {
+    // Place images on the right
+    rightPositions.forEach((pos) => {
         let imageSrc = getRandomUniqueImage();
-        if (imageSrc) createRandomImage(imageSrc, "right");
-    }
+        if (imageSrc) createImage(imageSrc, pos);
+    });
 }
+
 
 
 // Modify createRandomImage() to accept a specific image
